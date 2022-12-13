@@ -7,12 +7,10 @@ on:
 
 jobs:
   setup-env:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Install React Native
-        run: yarn global add react-native
 
       - name: Set up Java 11
         uses: actions/setup-java@v2
@@ -31,49 +29,21 @@ jobs:
           cache: "yarn"
 
       - name: Install Node modules
-        run: yarn
-
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-caches-
-
-      - name: Make Gradlew Executable
-        run: cd android && chmod +x ./gradlew
+        run: yarn install --frozen-lockfile
 
   build-android:
+    if: github.event.pull_request.merged == true
     needs: setup-env
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Make release.keystore
-        run: |
-          cd android/app && cp debug.keystore release.keystore && cd ../..
-
-      - name: Check assets folder exist or not
-        id: check_folder
-        uses: andstor/file-existence-action@v1
-        with:
-          files: "android/app/src/main/assets"
-
-      - name: File exists
-        if: steps.check_folder.outputs.files_exists == 'false'
-        run: |
-          mkdir android/app/src/main/assets
+      - name: Install Node modules
+        run: yarn
 
       - name: Build Android Release
         run: |
-          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android/app/src/main/res && rm -rf drawable-hdpi drawable-mdpi drawable-xhdpi drawable-xxhdpi drawable-xxxhdpi raw && cd ../../../../.. && cd android && ./gradlew clean && ./gradlew assembleRelease && cd .. && rm -rf android/app/src/main/assets
+          cd android && ./gradlew assembleRelease --no-daemon && cd ..
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
