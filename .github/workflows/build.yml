@@ -13,6 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Use Node.js 16.18.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.0
+          cache: 'yarn'
+
       - name: Set up Java 11
         uses: actions/setup-java@v2
         with:
@@ -23,17 +29,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Use Node.js 16.18.0
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.18.0
-          cache: 'yarn'
-
       - name: Install Node modules
         run: yarn install --frozen-lockfile
 
   build-android:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     needs: setup-env
     runs-on: ubuntu-latest
     steps:
