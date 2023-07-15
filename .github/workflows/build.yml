@@ -50,13 +50,13 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: app-release.apk
-          path: android/app/build/outputs/apk/release/
+          path: path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk
 
-      - name: send custom message
+      - name: Sending message to Telegram group
         uses: appleboy/telegram-action@master
         with:
-          to: -930372720
-          token: 6316819763:AAGueve7A-D91upbBv19-x4bkxDj6RHUPdo
+          to: ${{ secrets.TELEGRAM_GROUP_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
             Below is the apk for commit: ${{ github.event.head_commit.message }}
           document: ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk`
