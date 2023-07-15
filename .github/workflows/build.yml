@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: app-release.apk
-          path: path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk
+          path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk
 
       - name: Sending message to Telegram group
         uses: appleboy/telegram-action@master
