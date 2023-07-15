@@ -55,7 +55,7 @@ jobs:
       - name: send custom message
         uses: appleboy/telegram-action@master
         with:
-          to: This is APK
+          to: -930372720
           token: 6316819763:AAGueve7A-D91upbBv19-x4bkxDj6RHUPdo
           message: |
             Below is the apk for commit: ${{ github.event.head_commit.message }}
