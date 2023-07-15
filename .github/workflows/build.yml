@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: app-release.apk
-          path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk
+          path: ${{ github.workspace }}/android/app/build/outputs/apk/release/app-release.apk
 
       - name: Sending message to Telegram group
         uses: appleboy/telegram-action@master
@@ -59,4 +59,4 @@ jobs:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
             Below is the apk for commit: ${{ github.event.head_commit.message }}
-          document: ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk`
+          document: ${{ github.workspace }}/android/app/build/outputs/apk/release/app-release.apk`
